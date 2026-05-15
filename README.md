@@ -24,26 +24,26 @@ uv sync
 
 ## Usage
 
-Run the tool with a GitHub repository URL:
+Run the tool with a GitHub repository URL as an argument:
 
 ```bash
-uv run github-checker <github-repo-url>
+uv run github-checker "<github-repo-url>"
 ```
 
 ### Examples
 
 ```bash
 # Valid repository that exists
-uv run github-checker "https://github.com/LulaLopezKuryluk/my-project"
-# Output: found
+$ uv run github-checker "https://github.com/LulaLopezKuryluk/my-project"
+found
 
 # Invalid repository
-uv run github-checker "https://github.com/nonexistent/repo"
-# Output: not found
+$ uv run github-checker "https://github.com/nonexistent/repo"
+not found
 
 # Invalid URL format
-uv run github-checker "https://invalid-domain.com/user/repo"
-# Output: invalid URL
+$ uv run github-checker "https://invalid-domain.com/user/repo"
+invalid URL
 ```
 
 ## Running Tests
