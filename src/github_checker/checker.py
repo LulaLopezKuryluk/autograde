@@ -1,6 +1,10 @@
 from __future__ import annotations
 
 import re
+import subprocess
+import tempfile
+from pathlib import Path
+from shutil import rmtree
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlparse
 from urllib.request import Request, urlopen
@@ -40,7 +44,80 @@ def _send_get_request(url: str) -> int:
         return response.status
 
 
-def check_repository(url: str) -> str:
+def _clone_and_run_tests(url: str) -> str:
+    """Clone repository and run tests, returning test results."""
+    temp_dir = tempfile.mkdtemp(prefix="github_checker_")
+    try:
+        # Clone the repository
+        result = subprocess.run(
+            ["git", "clone", url, temp_dir],
+            capture_output=True,
+            text=True,
+            timeout=30,
+        )
+        if result.returncode != 0:
+            return f"failed to clone: {result.stderr}"
+
+        # Prepare environment for subprocess (remove VIRTUAL_ENV to avoid conflicts)
+        import os
+        env = os.environ.copy()
+        env.pop("VIRTUAL_ENV", None)
+        
+        # First, sync dependencies with uv
+        sync_result = subprocess.run(
+            ["uv", "sync"],
+            cwd=temp_dir,
+            capture_output=True,
+            text=True,
+            timeout=60,
+            env=env,
+        )
+        
+        if sync_result.returncode != 0:
+            # If uv sync fails, try just running pytest anyway (might still work)
+            pass
+        
+        # Then run tests with uv
+        result = subprocess.run(
+            ["uv", "run", "pytest", "--tb=short", "-q"],
+            cwd=temp_dir,
+            capture_output=True,
+            text=True,
+            timeout=120,
+            env=env,
+        )
+        
+        output = result.stdout + result.stderr
+        
+        if result.returncode == 0:
+            # Count passed tests
+            import re
+            passed_match = re.search(r"(\d+) passed", output)
+            if passed_match:
+                return f"tests passed: {passed_match.group(1)} tests"
+            return "tests passed"
+        else:
+            # Check if pytest is not installed or no tests
+            if "no tests ran" in output.lower() or "no module named pytest" in output.lower():
+                return f"no tests found or pytest not available"
+            if "No module named" in output:
+                return f"dependencies not available"
+            return f"tests failed"
+    except subprocess.TimeoutExpired:
+        return "timeout: test execution took too long"
+    except FileNotFoundError:
+        return "error: git or uv not found in PATH"
+    except Exception as e:
+        return f"error: {str(e)}"
+    finally:
+        # Cleanup temp directory
+        try:
+            rmtree(temp_dir, ignore_errors=True)
+        except Exception:
+            pass
+
+
+def check_repository(url: str, run_tests: bool = False) -> str:
     if not is_valid_github_repo_url(url):
         return "invalid URL"
 
@@ -60,4 +137,10 @@ def check_repository(url: str) -> str:
     except URLError as error:
         raise ConnectionError(f"Network error while checking repository: {error}") from error
 
-    return "found" if 200 <= status < 300 else "not found"
+    if not (200 <= status < 300):
+        return "not found"
+
+    if run_tests:
+        return _clone_and_run_tests(normalized)
+    
+    return "found"

@@ -1,13 +1,15 @@
 # GitHub Checker
 
-A simple Python tool to check if a GitHub repository exists by leveraging HTTP status codes instead of the GitHub API.
+A Python tool to check if a GitHub repository exists and optionally run its test suite by leveraging HTTP status codes and cloning repositories.
 
 ## Features
 
 - ✅ Validates GitHub repository URLs
 - ✅ Checks repository existence without authentication
-- ✅ Returns clear status: "found", "not found", or "invalid URL"
-- ✅ Uses HTTP HEAD/GET requests instead of API calls
+- ✅ **Clone and run test suites** from discovered repositories
+- ✅ Returns clear status: "found", "not found", "tests passed", "tests failed", or "invalid URL"
+- ✅ Uses HTTP HEAD/GET requests for checking existence
+- ✅ Supports automated test execution with `uv` and pytest
 
 ## Requirements
 
@@ -30,12 +32,28 @@ Run the tool with a GitHub repository URL as an argument:
 uv run github-checker "<github-repo-url>"
 ```
 
+To also run the repository's test suite:
+
+```bash
+uv run github-checker --run-tests "<github-repo-url>"
+```
+
+Or use the short flag:
+
+```bash
+uv run github-checker -t "<github-repo-url>"
+```
+
 ### Examples
 
 ```bash
-# Valid repository that exists
+# Check if repository exists
 $ uv run github-checker "https://github.com/LulaLopezKuryluk/my-project"
 found
+
+# Check and run tests
+$ uv run github-checker --run-tests "https://github.com/LulaLopezKuryluk/autograde"
+tests passed: 17 tests
 
 # Invalid repository
 $ uv run github-checker "https://github.com/nonexistent/repo"

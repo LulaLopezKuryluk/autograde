@@ -5,11 +5,22 @@ from .checker import check_repository
 
 def main(argv=None) -> int:
     argv = sys.argv[1:] if argv is None else list(argv)
-    if len(argv) != 1:
-        print("Usage: github-checker <github-repo-url>", file=sys.stderr)
+    
+    # Parse arguments
+    run_tests = False
+    url = None
+    
+    for arg in argv:
+        if arg in ("--run-tests", "-t"):
+            run_tests = True
+        elif not arg.startswith("-"):
+            url = arg
+    
+    if not url:
+        print("Usage: github-checker [--run-tests] <github-repo-url>", file=sys.stderr)
         return 1
 
-    result = check_repository(argv[0])
+    result = check_repository(url, run_tests=run_tests)
     print(result)
     return 0
 

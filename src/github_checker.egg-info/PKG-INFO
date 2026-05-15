@@ -8,3 +8,5 @@ Classifier: Programming Language :: Python :: 3
 Classifier: Programming Language :: Python :: 3.11
 Classifier: License :: OSI Approved :: MIT License
 Requires-Python: >=3.11
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0; extra == "dev"
