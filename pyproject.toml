@@ -14,6 +14,9 @@ classifiers = [
 [project.scripts]
 github-checker = "github_checker.__main__:main"
 
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
+
 [tool.uv]
 package = true
 
