@@ -1,0 +1,2 @@
+[console_scripts]
+github-checker = github_checker.__main__:main

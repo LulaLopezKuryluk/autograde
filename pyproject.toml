@@ -1,0 +1,24 @@
+[project]
+name = "github-checker"
+version = "0.1.0"
+description = "Simple GitHub repository existence checker."
+requires-python = ">=3.11"
+authors = [ { name = "GitHub Checker" } ]
+license = { text = "MIT" }
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "License :: OSI Approved :: MIT License",
+]
+
+[project.scripts]
+github-checker = "github_checker.__main__:main"
+
+[tool.uv]
+package = true
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-q"
+testpaths = ["tests"]
+pythonpath = ["src"]

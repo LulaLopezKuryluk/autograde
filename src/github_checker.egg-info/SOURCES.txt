@@ -1,0 +1,10 @@
+pyproject.toml
+src/github_checker/__init__.py
+src/github_checker/__main__.py
+src/github_checker/checker.py
+src/github_checker.egg-info/PKG-INFO
+src/github_checker.egg-info/SOURCES.txt
+src/github_checker.egg-info/dependency_links.txt
+src/github_checker.egg-info/entry_points.txt
+src/github_checker.egg-info/top_level.txt
+tests/test_checker.py
