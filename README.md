@@ -1,4 +1,3 @@
-# AutoGrade
 
 Simple CLI tool for repository validation.
 
