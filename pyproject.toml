@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "Simple GitHub repository existence checker."
 requires-python = ">=3.11"
 authors = [ { name = "GitHub Checker" } ]
+dependencies = ["pytest>=7.0"]
 license = { text = "MIT" }
 classifiers = [
     "Programming Language :: Python :: 3",
@@ -13,9 +14,6 @@ classifiers = [
 
 [project.scripts]
 github-checker = "github_checker.__main__:main"
-
-[project.optional-dependencies]
-dev = ["pytest>=7.0"]
 
 [tool.uv]
 package = true

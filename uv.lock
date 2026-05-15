@@ -15,15 +15,12 @@ wheels = [
 name = "github-checker"
 version = "0.1.0"
 source = { editable = "." }
-
-[package.optional-dependencies]
-dev = [
+dependencies = [
     { name = "pytest" },
 ]
 
 [package.metadata]
-requires-dist = [{ name = "pytest", marker = "extra == 'dev'", specifier = ">=7.0" }]
-provides-extras = ["dev"]
+requires-dist = [{ name = "pytest", specifier = ">=7.0" }]
 
 [[package]]
 name = "iniconfig"
